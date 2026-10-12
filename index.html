@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>My Zoo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+
+:root{--bg:#E8EDE2;--panel:#1F3D2C;--panel-ink:#F3EFD8;--ink:#1E281C;--muted:#55624F;--accent:#C98A12;--line:#C5CFBB;--card:#F5F7F0;--hlbg:rgba(201,138,18,.25);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1812;--panel:#16291E;--ink:#E6EBDD;--muted:#9AA894;--accent:#E2A736;--line:#2A3B30;--card:#14221A;--hlbg:rgba(226,167,54,.22)}}
+:root[data-theme="dark"]{--bg:#0E1812;--panel:#16291E;--ink:#E6EBDD;--muted:#9AA894;--accent:#E2A736;--line:#2A3B30;--card:#14221A;--hlbg:rgba(226,167,54,.22)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 "Atkinson Hyperlegible",system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding-bottom:30px}
+[hidden]{display:none!important}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;background:var(--panel);color:var(--panel-ink);padding:14px 16px}
+.brand{font:800 19px "Bricolage Grotesque",system-ui,sans-serif}
+h2{font:800 20px "Bricolage Grotesque",system-ui,sans-serif;margin:14px 0 4px}
+h3{font:800 16px "Bricolage Grotesque",system-ui,sans-serif;color:var(--accent);margin:22px 0 0;padding-top:12px;border-top:1px solid var(--line)}
+button{font:700 15px "Atkinson Hyperlegible",system-ui,sans-serif;border:2px solid var(--accent);background:var(--accent);color:#1b1405;border-radius:8px;padding:9px 14px;cursor:pointer}
+button.ghost{background:transparent;color:var(--ink)}
+.top button.ghost{color:var(--panel-ink)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+/* admin */
+.card{background:var(--card);border:1px solid var(--line);margin:16px 16px 0;padding:16px}
+.card h2{margin:0 0 8px;font-size:20px}
+.list{margin:16px}
+.hint,.mode{font-size:14px;color:var(--muted);margin:4px 0 10px}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 4px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px}
+textarea{min-height:64px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr;gap:6px}
+@media(min-width:520px){.two{grid-template-columns:1fr 1fr}}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.item{display:flex;gap:14px;background:var(--card);border:1px solid var(--line);padding:12px;margin-bottom:12px;break-inside:avoid}
+.qr{background:#fff;padding:6px;flex:none;line-height:0;align-self:flex-start}
+.qr img{display:none!important}
+.info{min-width:0;flex:1}
+.info b{font:800 19px "Bricolage Grotesque",system-ui,sans-serif}
+.info i{display:block;color:var(--muted)}
+.info small{display:block;color:var(--muted);word-break:break-all;margin:4px 0 8px;font-size:12px}
+.info .row{margin-top:6px}.info button{padding:6px 10px;font-size:14px}
+#msg{min-height:22px;margin:10px 0 0;font-weight:700}
+.empty{color:var(--muted);padding:12px 0}
+#foto_prev{max-width:200px;max-height:150px;border-radius:6px;border:1px solid var(--line);display:block}
+/* halaman hewan */
+.lang{display:flex}
+.lang button{font-size:14px;border-radius:0;padding:4px 12px;background:transparent;color:var(--panel-ink)}
+.lang button:first-child{border-radius:99px 0 0 99px}.lang button:last-child{border-radius:0 99px 99px 0;border-left:0}
+.lang button[aria-pressed="true"]{background:var(--accent);color:#1b1405}
+.hero{background:var(--panel);color:var(--panel-ink);padding:26px 20px 34px}
+.hero h1{font:800 clamp(44px,15vw,100px)/.95 "Bricolage Grotesque",system-ui,sans-serif;margin:0;letter-spacing:-.02em;overflow-wrap:anywhere}
+.sci{font-style:italic;font-size:19px;margin:12px 0 16px;opacity:.85}
+.status{display:inline-block;background:var(--accent);color:#1b1405;font-weight:700;font-size:15px;padding:6px 14px;border-radius:4px}
+.pic{background:linear-gradient(#E9B54C,#D08A22);overflow:hidden}
+.pic img.foto{width:100%;max-height:340px;object-fit:cover;display:block}
+.ph{width:110px;margin:26px auto;display:block}
+.credit{margin:6px 20px 0;font-size:13px;color:var(--muted)}
+.intro{padding:20px 20px 4px;font-size:19px;margin:0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin:20px;border:1px solid var(--line)}
+.stats div{background:var(--card);padding:14px}
+.stats b{display:block;font:800 22px "Bricolage Grotesque",system-ui,sans-serif}
+.stats span{font-size:14px;color:var(--muted)}
+.stats.hl{background:var(--accent);outline:3px solid var(--accent);outline-offset:2px}
+.sec{padding:6px 20px 14px}
+.sec h2{margin:14px 0 4px}
+.sec p{margin:0 0 10px;max-width:60ch}
+details{border-top:1px solid var(--line);padding:12px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:700}
+details p{margin:8px 0 0;color:var(--muted)}
+.hl{background:var(--hlbg);box-shadow:-10px 0 0 var(--hlbg),10px 0 0 var(--hlbg);border-radius:4px}
+#nar{display:flex;align-items:center;justify-content:center;width:calc(100% - 40px);min-height:54px;margin:16px 20px 0;font-size:18px;border-radius:12px;padding:12px 18px}
+.nm{margin:8px 20px 0;font-size:14px;color:var(--muted)}
+.quiz{padding:10px 20px 8px}
+#qz-open{display:flex;justify-content:center;width:100%;min-height:54px;font-size:18px;background:var(--panel);color:var(--panel-ink);border:0;border-radius:12px;padding:12px 18px}
+.qzbox{border:2px solid var(--accent);border-radius:14px;padding:16px;margin-top:14px;background:var(--card)}
+.qp{margin:0;font-size:14px;color:var(--muted)}
+.qh{font:800 clamp(24px,6vw,34px)/1.25 "Bricolage Grotesque",system-ui,sans-serif;margin:6px 0 4px;color:var(--ink);border:0;padding:0}
+div.opt{display:flex;gap:12px;align-items:center;font:700 clamp(19px,4.6vw,26px) "Atkinson Hyperlegible",system-ui,sans-serif;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.opt b{flex:none;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#1b1405;display:grid;place-items:center;font-size:20px}
+.opt.ok{border-color:#2E7D32;background:rgba(46,125,50,.2)}
+.opt.dim{opacity:.5}
+.opt.hl{box-shadow:0 0 0 4px var(--accent)}
+.qf{margin:10px 0 0;font-weight:700}
+.qrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.qn{font-size:20px;padding:15px 28px}
+.qg{background:transparent;color:var(--ink);border-color:var(--line);font-size:17px;padding:12px 18px}
+#animal.fs{position:fixed;inset:0;overflow:auto;background:var(--bg);z-index:100;font-size:20px;padding-bottom:env(safe-area-inset-bottom,0px)}
+#animal.fs>:not(.hero):not(.pic):not(.top){max-width:900px;margin-left:auto;margin-right:auto}
+.lbtn{display:block;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 12px;font:800 22px "Bricolage Grotesque",system-ui,sans-serif}
+.lbtn i{display:block;font:italic 400 15px "Atkinson Hyperlegible",system-ui,sans-serif;color:var(--muted)}
+footer{padding:18px 20px 28px;font-size:13px;color:var(--muted);word-break:break-all}
+@media print{.noprint,button{display:none!important}body{background:#fff;color:#000}.item{border:1px solid #999}}
+.btn{display:inline-block;font:700 15px "Atkinson Hyperlegible",system-ui,sans-serif;border:2px solid var(--accent);border-radius:8px;padding:9px 14px;color:var(--panel-ink);text-decoration:none;background:transparent}
+a.lbtn{text-decoration:none}
+</style>
+</head>
+<body>
+<main>
+<p id="boot" style="padding:28px 20px;text-align:center;font-size:18px">Memuat…</p>
+<div id="landing" hidden>
+<div class="top"><span class="brand">My Zoo</span><div class="lang"><button data-l="id" aria-pressed="true">ID</button><button data-l="en" aria-pressed="false">EN</button></div></div>
+<div class="hero"><h1 id="l_t"></h1><p class="sci" id="l_s"></p></div>
+<div class="list" id="l_list"></div>
+</div>
+
+<div id="animal" hidden>
+<div class="top"><a id="back" class="btn" href="#"></a><button id="fs" class="ghost" type="button"></button><div class="lang"><button data-l="id" aria-pressed="true">ID</button><button data-l="en" aria-pressed="false">EN</button></div></div>
+<div class="hero"><h1 id="a_nama"></h1><p class="sci" id="a_sci"></p><span class="status" id="a_status"></span></div>
+<div class="pic" id="a_pic"></div>
+<p class="credit" id="a_credit"></p>
+<button id="nar" type="button"></button>
+<p id="nm" class="nm" aria-live="polite"></p>
+<p class="intro" id="e1"></p>
+<div class="stats" id="e4"></div>
+<section class="sec"><h2 id="h1"></h2><p id="e2"></p><h2 id="h2"></h2><p id="e3"></p><h2 id="h3"></h2><div id="facts"></div></section>
+<section class="quiz" id="quizsec"><button id="qz-open" type="button" aria-expanded="false"></button><div id="qz" hidden></div></section>
+<footer id="a_foot"></footer>
+</div>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+var BOOT={id:(new URLSearchParams(location.search).get("s")||"").toLowerCase().replace(/[^a-z0-9-]/g,""),base:location.origin+location.pathname,animal:null,list:[]};
+var cu=null,QL=[],cur="id";try{cur=localStorage.getItem("zoo_lang")==="en"?"en":"id"}catch(e){}
+/* ---------- halaman hewan ---------- */
+var UI={id:{admin:"\u2190 Admin",h1:"Habitat",h2:"Makanan",h3:"Tahukah kamu?",listen:"\u25b6 Dengarkan narasi",stopn:"\u25a0 Hentikan narasi",nosound:"Suara tidak bisa diputar di sini. Teks disorot agar bisa dibaca; coba buka di Chrome atau Safari untuk suara.",load:"Memuat\u2026",nf:"Hewan tidak ditemukan.",lback:"← Daftar hewan",fs:"⛶ Layar penuh",fsx:"✕ Keluar layar penuh",fsno:"Layar penuh sistem tidak didukung di tampilan ini. Memakai mode lebar.",lt:"Pilih hewan",ls:"Ketuk nama hewan untuk melihat ceritanya.",lempty:"Belum ada hewan.",
+qopen:"\u2605 Kuis kelas (guru + murid)",qclose:"Tutup kuis",qtitle:"Kuis Kelas",hint:"Guru tinggal menekan tombol. Narator membacakan soal dan pilihan jawaban. Murid menjawab dengan angkat tangan atau menyebut A, B, atau C.",start:"\u25b6 Mulai kuis",show:"Tampilkan jawaban",next:"Soal berikutnya",fin:"Selesai",again:"Kembali ke awal",rep:"\u21bb Ulangi",n:"Soal %1 dari %2",qn:"Soal nomor %1.",opt:"Pilihan",ans:"Jawabannya adalah",intro:"Halo anak-anak! Ayo kita main kuis tentang %1. Dengarkan baik-baik ya!",outro:"Kuis selesai! Kalian hebat sekali. Sekarang kalian semua sudah jadi pakar!",done:"Kuis selesai!"},
+en:{admin:"\u2190 Admin",h1:"Habitat",h2:"Diet",h3:"Did you know?",listen:"\u25b6 Listen",stopn:"\u25a0 Stop",nosound:"Audio can't play here. Text is highlighted to read along; try Chrome or Safari for sound.",load:"Loading\u2026",nf:"Animal not found.",lback:"← Animal list",fs:"⛶ Fullscreen",fsx:"✕ Exit fullscreen",fsno:"System fullscreen isn't supported in this view. Using wide mode.",lt:"Choose an animal",ls:"Tap an animal's name to see its story.",lempty:"No animals yet.",
+qopen:"\u2605 Class quiz (teacher + students)",qclose:"Close quiz",qtitle:"Class Quiz",hint:"The teacher just presses the button. The narrator reads each question and the choices. Students answer by raising a hand or saying A, B, or C.",start:"\u25b6 Start quiz",show:"Show answer",next:"Next question",fin:"Finish",again:"Back to start",rep:"\u21bb Repeat",n:"Question %1 of %2",qn:"Question number %1.",opt:"Option",ans:"The answer is",intro:"Hello, everyone! Let's play a quiz about %1. Listen carefully!",outro:"The quiz is over! You were awesome. Now you are all experts!",done:"Quiz finished!"}};
+var LC={id:"id-ID",en:"en-US"};
+function U(){return UI[cur]}
+function g(k){return cu?(cu[k+"_"+cur]||cu[k+"_id"]||""):""}
+var syn=window.speechSynthesis,ok=!!(syn&&window.SpeechSynthesisUtterance),bad=false,on=false,tok=0,QI=0,QP=0,QO=false;
+function voice(){var v=syn.getVoices(),c=LC[cur].toLowerCase();return v.filter(function(x){return x.lang.toLowerCase().replace("_","-")===c})[0]||v.filter(function(x){return x.lang.toLowerCase().indexOf(cur)===0})[0]||null}
+function hl(x){var o=document.querySelectorAll(".hl");for(var i=0;i<o.length;i++)o[i].classList.remove("hl");if(x){var e=$(x);if(e){e.classList.add("hl");if(e.tagName==="DETAILS")e.open=true;try{e.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"})}catch(_){}}}}
+function note(t){var a=$("nm"),b=$("qmsg");a.textContent=t||"";if(b)b.textContent=t||""}
+function lbl(){$("nar").textContent=on?U().stopn:U().listen}
+function stop(){tok++;if(ok)syn.cancel();on=false;hl();lbl()}
+function say(its,done){var my=++tok,i=0,v=ok?voice():null;bad=false;note("");if(ok){syn.cancel();syn.resume()}
+(function nx(){if(my!==tok)return;hl();if(i>=its.length){if(done)done();return}
+var it=its[i++],txt=it[1],fired=false,started=false;if(it[0])hl(it[0]);
+function go(fb){if(fired||my!==tok)return;fired=true;if(fb){bad=true;note(U().nosound);setTimeout(nx,Math.max(1500,txt.length*60))}else nx()}
+if(!ok||bad){go(true);return}
+var u=new SpeechSynthesisUtterance(txt);u.lang=LC[cur];if(v)u.voice=v;u.rate=.92;u.pitch=1.1;
+u.onstart=function(){started=true};u.onend=function(){go(false)};u.onerror=function(){go(true)};
+syn.speak(u);setTimeout(function(){if(!started&&!fired){syn.cancel();go(true)}},3000)})()}
+function nItems(){var a=[],st=g("n_stats");
+if(!st)st=[1,2,3,4].map(function(n){return g("s"+n+"l")&&g("s"+n+"v")?g("s"+n+"l")+": "+g("s"+n+"v"):""}).filter(Boolean).join(". ");
+a.push(["e1",g("n_intro")||g("intro")],["e4",st],["e2",g("n_habitat")||(g("habitat")?U().h1+". "+g("habitat"):"")],["e3",g("n_makanan")||(g("makanan")?U().h2+". "+g("makanan"):"")]);
+for(var k=1;k<4;k++)if(g("q"+k)&&g("a"+k))a.push(["d"+k,g("n_f"+k)||(g("q"+k)+" "+g("a"+k))]);
+return a.filter(function(x){return x[1]&&x[1].trim()})}
+$("nar").onclick=function(){if(on){stop();return}on=true;lbl();say(nItems(),function(){on=false;lbl()})};
+var PH='<svg class="ph" viewBox="0 0 120 100" aria-hidden="true"><g fill="#6B330C"><ellipse cx="60" cy="68" rx="26" ry="20"/><ellipse cx="24" cy="42" rx="11" ry="14"/><ellipse cx="46" cy="24" rx="11" ry="15"/><ellipse cx="74" cy="24" rx="11" ry="15"/><ellipse cx="96" cy="42" rx="11" ry="14"/></g></svg>';
+function Qv(k){return{q:g("k"+k+"q"),o:[g("k"+k+"a"),g("k"+k+"b"),g("k"+k+"c")],a:{A:0,B:1,C:2}[cu["k"+k+"ok"]],e:g("k"+k+"e")}}
+function qList(){var r=[];for(var k=1;k<6;k++){var v=Qv(k);if(v.q&&v.o.every(Boolean)&&v.a!==undefined)r.push(v)}return r}
+function qItems(){var Qq=QL[QI],LT=["A","B","C"],it=[["qq",U().qn.replace("%1",QI+1)+" "+Qq.q]];Qq.o.forEach(function(t,k){it.push(["qo"+k,U().opt+" "+LT[k]+": "+t])});return it}
+function aItems(){var Qq=QL[QI];return[["qo"+Qq.a,U().ans+" "+"ABC".charAt(Qq.a)+", "+Qq.o[Qq.a]+". "+Qq.e]]}
+function qzRender(){var S=U(),bt=$("qz-open"),bx=$("qz");
+$("quizsec").hidden=!QL.length;bt.textContent=QO?S.qclose:S.qopen;bt.setAttribute("aria-expanded",QO);bx.hidden=!QO;bx.innerHTML="";if(!QO||!QL.length)return;bx.className="qzbox";
+var N=QL.length;if(QI>=N)QI=0;
+function btn(c,t,f){var b=el("button",c,t);b.type="button";b.onclick=f;return b}
+if(QP===0||QP===3){bx.appendChild(el("h3","qh",QP?S.done:S.qtitle));bx.appendChild(el("p",null,QP?S.outro:S.hint));
+var r=el("div","qrow");r.appendChild(btn("qn",QP?S.again:S.start,function(){if(QP){stop();QP=0;QI=0;qzRender()}else{QI=0;QP=1;qzRender();say([[null,S.intro.replace("%1",g("nama").toLowerCase())]].concat(qItems()))}}));bx.appendChild(r)}
+else{var Qq=QL[QI];bx.appendChild(el("p","qp",S.n.replace("%1",QI+1).replace("%2",N)));var h=el("h3","qh",Qq.q);h.id="qq";bx.appendChild(h);
+Qq.o.forEach(function(t,k){var d=el("div","opt");d.id="qo"+k;d.appendChild(el("b",null,"ABC".charAt(k)));d.appendChild(el("span",null,(QP===2&&k===Qq.a?"\u2713 ":"")+t));if(QP===2)d.classList.add(k===Qq.a?"ok":"dim");bx.appendChild(d)});
+if(QP===2&&Qq.e)bx.appendChild(el("p","qf",Qq.e));
+var r2=el("div","qrow");
+r2.appendChild(btn("qn",QP===1?S.show:(QI+1>=N?S.fin:S.next),function(){if(QP===1){QP=2;qzRender();say(aItems())}else if(QI+1>=N){QP=3;qzRender();say([[null,S.outro]])}else{QI++;QP=1;qzRender();say(qItems())}}));
+r2.appendChild(btn("qg",S.rep,function(){say(QP===1?qItems():aItems())}));bx.appendChild(r2)}
+var mp=el("p","qp");mp.id="qmsg";mp.setAttribute("aria-live","polite");bx.appendChild(mp)}
+$("qz-open").onclick=function(){QO=!QO;if(!QO){stop();QP=0;QI=0}qzRender()};
+function renderA(){cu=BOOT.animal||null;var S=U();
+$("back").textContent=S.lback;$("fs").textContent=FSon?S.fsx:S.fs;lbl();
+document.querySelectorAll(".lang button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.l===cur)});
+document.documentElement.lang=cur;
+if(!cu){$("a_nama").textContent=S.nf;["a_sci","a_status","a_pic","a_credit","e1","e4","e2","e3","facts","a_foot"].forEach(function(i){$(i).textContent=""});$("a_status").hidden=true;QL=[];qzRender();return}
+document.title="My Zoo \u2013 "+g("nama");
+$("a_nama").textContent=g("nama");$("a_sci").textContent=cu.ilmiah||"";$("a_status").textContent=g("status");$("a_status").hidden=!g("status");
+var p=$("a_pic");p.innerHTML="";
+if(cu.foto){var im=el("img","foto");im.src=photoSrc(cu.foto);im.alt=g("nama");im.onerror=function(){im.remove();p.insertAdjacentHTML("beforeend",PH)};p.appendChild(im)}else p.insertAdjacentHTML("beforeend",PH);
+$("a_credit").textContent=g("foto_kredit");$("e1").textContent=g("intro");$("e1").hidden=!g("intro");
+var st=$("e4");st.innerHTML="";for(var n=1;n<5;n++){if(g("s"+n+"l")&&g("s"+n+"v")){var d=el("div");d.appendChild(el("b",null,g("s"+n+"v")));d.appendChild(el("span",null,g("s"+n+"l")));st.appendChild(d)}}st.hidden=!st.children.length;
+$("h1").textContent=S.h1;$("h2").textContent=S.h2;$("h3").textContent=S.h3;
+$("e2").textContent=g("habitat");$("e3").textContent=g("makanan");$("h1").hidden=$("e2").hidden=!g("habitat");$("h2").hidden=$("e3").hidden=!g("makanan");
+var f=$("facts");f.innerHTML="";for(var k=1;k<4;k++){if(g("q"+k)&&g("a"+k)){var dt=el("details");dt.id="d"+k;dt.appendChild(el("summary",null,g("q"+k)));dt.appendChild(el("p",null,g("a"+k)));f.appendChild(dt)}}$("h3").hidden=!f.children.length;
+$("a_foot").textContent="";
+QL=qList();qzRender()}
+
+var FSon=false;
+function photoSrc(v){return /^https?:/i.test(v)?v:"https://drive.google.com/thumbnail?id="+encodeURIComponent(v)+"&sz=w1000"}
+function fsSet(on){FSon=on;$("animal").classList.toggle("fs",on);$("fs").textContent=on?U().fsx:U().fs}
+function fsExit(){if(FSon){fsSet(false);if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(function(){})}}
+function sync(){document.querySelectorAll(".lang button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.l===cur)});document.documentElement.lang=cur}
+function renderL(){var S=U(),L=$("l_list");sync();$("l_t").textContent=S.lt;$("l_s").textContent=S.ls;L.innerHTML="";
+if(!BOOT.list.length){L.appendChild(el("p","empty",S.lempty));return}
+BOOT.list.forEach(function(it){var a=el("a","lbtn",it["nama_"+cur]||it.nama_id||it.ilmiah);a.href=BOOT.base+"?s="+encodeURIComponent(it.id);a.target="_top";a.appendChild(el("i",null,it.ilmiah||""));L.appendChild(a)})}
+$("back").href=BOOT.base;$("back").target="_top";
+$("fs").onclick=function(){if(FSon){fsExit();return}fsSet(true);var d=document.documentElement,rq=d.requestFullscreen||d.webkitRequestFullscreen;
+if(rq){try{var pr=rq.call(d);if(pr&&pr.catch)pr.catch(function(){note(U().fsno)})}catch(e){note(U().fsno)}}else note(U().fsno)};
+document.addEventListener("fullscreenchange",function(){if(!document.fullscreenElement&&FSon)fsSet(false)});
+document.querySelectorAll(".lang button").forEach(function(b){b.onclick=function(){stop();cur=b.dataset.l;try{localStorage.setItem("zoo_lang",cur)}catch(e){}renderA();renderL()}});
+
+/* ---------- sumber data: Google Sheet yang dipublikasikan sebagai CSV ---------- */
+var CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vTH7skfBdVJt51X87PYMUaip-BQhEazaypzd1LtJa-q4h8mH77rnoiaMqaz1J1-pOj4KCBm66lVoCjq/pub?gid=246258816&single=true&output=csv";
+function parseCSV(t){var rows=[],r=[],f="",q=false,i=0,c;t=t.replace(/^\uFEFF/,"");
+for(;i<t.length;i++){c=t.charAt(i);
+if(q){if(c==='"'){if(t.charAt(i+1)==='"'){f+='"';i++}else q=false}else f+=c}
+else if(c==='"')q=true;else if(c===","){r.push(f);f=""}else if(c==="\n"||c==="\r"){if(c==="\r"&&t.charAt(i+1)==="\n")i++;r.push(f);f="";rows.push(r);r=[]}else f+=c}
+if(f!==""||r.length){r.push(f);rows.push(r)}
+var h=rows.shift()||[];return rows.filter(function(x){return x.length>1||x[0]}).map(function(x){var o={};h.forEach(function(k,j){o[k]=x[j]==null?"":x[j]});return o})}
+function start(rows){var l=rows.filter(function(r){return r.id});
+BOOT.list=l.map(function(a){return{id:a.id,ilmiah:a.ilmiah,nama_id:a.nama_id,nama_en:a.nama_en}});
+BOOT.animal=BOOT.id?(l.filter(function(r){return r.id===BOOT.id})[0]||null):null;
+$("boot").hidden=true;if(BOOT.id){$("animal").hidden=false;renderA()}else{$("landing").hidden=false;renderL()}}
+(function load(){
+if(CSV_URL.indexOf("http")!==0){$("boot").textContent="Alamat data (CSV_URL) belum diisi di file index.html.";return}
+var cached=null;try{cached=localStorage.getItem("zoo_csv")}catch(e){}
+if(cached){try{start(parseCSV(cached))}catch(e){}}
+fetch(CSV_URL).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()}).then(function(t){
+if(t===cached)return;try{localStorage.setItem("zoo_csv",t)}catch(e){}start(parseCSV(t))
+}).catch(function(){if(!cached){$("boot").hidden=false;$("boot").textContent="Tidak bisa memuat data. Periksa sinyal lalu muat ulang halaman."}})})();
+</script>
+</body>
+</html>
